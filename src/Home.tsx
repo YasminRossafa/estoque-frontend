@@ -1,10 +1,10 @@
 import './Home.css';
 import React, { useState, useEffect } from 'react';
-import axios from 'axios'; // Importe o Axios para fazer requisições HTTP
+import axios from 'axios'; 
 
 interface Product {
-  nome: string; // Renomeie os campos para corresponder ao backend
-  descrição: string;
+  nome: string; 
+  descricao: string;
   valor: number;
   quantidade: number;
 }
@@ -16,6 +16,7 @@ const Home: React.FC = () => {
   const [price, setPrice] = useState(0);
   const [quantity, setQuantity] = useState(0);
   const [editingProductName, setEditingProductName] = useState<string | null>(null);
+  const [image, setImage] = useState<File | null>(null);
 
   useEffect(() => {
     fetchProducts();
@@ -31,36 +32,54 @@ const Home: React.FC = () => {
   };
 
   const addProduct = async () => {
-    const newProduct: Omit<Product, 'id'> = { nome: name, descrição: description, valor: price, quantidade: quantity };
+    const formData = new FormData();
+    formData.append('nome', name); 
+    formData.append('descricao', description); 
+    formData.append('valor', String(price));
+    formData.append('quantidade', String(quantity));
+    if (image) {
+      formData.append('imagem', image);
+    }
     try {
-      await axios.post('http://localhost:5050/produtos', newProduct);
+      await axios.post('http://localhost:5050/produtos', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       fetchProducts();
       clearForm();
     } catch (error) {
       console.error('Erro ao adicionar produto:', error);
     }
   };
-
+  
   const editProduct = async () => {
     if (!editingProductName) return;
-    const updatedProduct: Product = {
-      nome: name,
-      descrição: description,
-      valor: price,
-      quantidade: quantity,
-    };
+    const formData = new FormData();
+    formData.append('descricao', description); 
+    formData.append('valor', String(price));
+    formData.append('quantidade', String(quantity));
+    if (image) {
+      formData.append('imagem', image);
+    }
     try {
-      await axios.put(`http://localhost:5050/produtos/${editingProductName}`, updatedProduct);
+      await axios.put(`http://localhost:5050/produtos/${editingProductName}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       fetchProducts();
       clearForm();
     } catch (error) {
       console.error('Erro ao editar produto:', error);
     }
   };
+  
+  
 
   const deleteProduct = async (name: string) => {
     try {
-      await axios.delete(`http://localhost:5050/produtos/${name}`); // Corrigido
+      await axios.delete(`http://localhost:5050/produtos/${name}`); 
       fetchProducts();
     } catch (error) {
       console.error('Erro ao excluir produto:', error);
@@ -77,7 +96,7 @@ const Home: React.FC = () => {
 
   const startEditing = (product: Product) => {
     setName(product.nome);
-    setDescription(product.descrição);
+    setDescription(product.descricao);
     setPrice(product.valor);
     setQuantity(product.quantidade);
     setEditingProductName(product.nome);
@@ -103,6 +122,14 @@ const Home: React.FC = () => {
           value={description}
           onChange={e => setDescription(e.target.value)}
           placeholder="Digite a descrição do produto"
+        />
+        <br />
+        <label htmlFor="image">Imagem do Produto:</label>
+        <input
+          type="file"
+          id="image"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files?.[0] || null)}
         />
         <br />
         <label htmlFor="price">Preço do Produto:</label>
@@ -135,7 +162,7 @@ const Home: React.FC = () => {
         <ul>
           {products.map(product => (
             <li key={product.nome}>
-              {product.nome} - {product.descrição} - {product.valor ? `R$ ${product.valor.toFixed(2)}` : 'Preço não disponível'} - {product.quantidade} unidade(s)
+              {product.nome} - {product.descricao} - {product.valor ? `R$ ${product.valor.toFixed(2)}` : 'Preço não disponível'} - {product.quantidade} unidade(s)
               <button onClick={() => startEditing(product)}>Editar</button>
               <button onClick={() => deleteProduct(product.nome)}>Excluir</button>
             </li>
