@@ -1,0 +1,61 @@
+.container2 {
+  width: 90%;
+  height: max-content;
+  margin: auto;
+  background-color: #ebebeb;
+  padding: 20px 15px;
+  margin-top: 20px;
+  border-radius: 7px;
+  font-family: Roboto, sans-serif;
+  box-shadow: 10px 11px rgba(0, 0, 0, 0.7);
+  }
+  
+  h1, h2 {
+    margin-bottom: 20px;
+  }
+  
+  form {
+    margin-bottom: 20px;
+  }
+  
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+  
+  input[type="text"],
+  input[type="number"],
+  textarea {
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #0056b3;
+  }
+  
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  li {
+    margin-bottom: 10px;
+  }
+  
+  li button {
+    margin-left: 10px;
+  }
+  
